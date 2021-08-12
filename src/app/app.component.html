@@ -2,7 +2,7 @@
   <span class="navbar-brand navbar-text">Banco Estado</span>
 </nav>
 <br />
-<div class="container-sm">
+<div *ngIf="!messages" class="container-sm">
   <table class="table table-hover">
     <thead>
       <tr>
@@ -23,4 +23,7 @@
       </tr>
     </tbody>
   </table>
+</div>
+<div *ngIf="messages" class="container-sm alert alert-danger" role="alert">
+  No se ha encontrado informacion de clientes.
 </div>

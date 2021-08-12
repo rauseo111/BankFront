@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { isEmpty } from 'rxjs/operators';
 import { Cliente } from './interface/data';
+import { ProviderCustomerInfoService } from './services/provider-customerInfo.service';
 
 @Component({
   selector: 'app-root',
@@ -7,25 +9,25 @@ import { Cliente } from './interface/data';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
-  public data: Array<Cliente> = [
-    {
-      id: '1',
-      rut: '26.247.043-1',
-      nombre: 'LEONARDO JOSE',
-      tipo_cuenta: 'CORRIENTE',
-      numerocuenta: '023181844484848455'
-    },
-    {
-      id: '2',
-      rut: '19.202.480-3',
-      nombre: 'INES VALENZUELA',
-      tipo_cuenta: 'AHORRO',
-      numerocuenta: '001284848484848444'
-    }
-  ];
+  public data: Array<Cliente> = [];
+  public swBloqueo: boolean = false;
+  public messages: boolean = false;
+  constructor(private clienteProvider: ProviderCustomerInfoService) { }
   ngOnInit(): void {
-    console.log('data: ', this.data);
+    this.listadoClientes();
   }
-
+  listadoClientes = () => {
+    const cbSuccess = (response: any) => {
+      if (Object.values(response.clientes).length > 0) {
+        this.data = response.clientes;
+        this.messages = false;
+      } else {
+        this.messages = true;
+      }
+    };
+    const cbFailure = (error: any) => {
+      this.messages = true;
+    };
+    this.clienteProvider.getAllClientes().subscribe(cbSuccess, cbFailure);
+  };
 }
